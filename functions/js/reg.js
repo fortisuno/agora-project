@@ -14,7 +14,7 @@ router.post('/pedidos', async (req, res) => {
         await db.collection('pedidos')
         .doc('/'+data.toFixed(0)+'/')
         .create({ 
-            titulo: req.body.name,
+            titulo: req.body.titulo,
             usuarioid: req.body.usuarioid,
             usuarion: req.body.usuarion,
             presupuesto: req.body.presupuesto,
