@@ -7,6 +7,12 @@ const Inicio = ({ navigation }) => {
 		<View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
 			<Text style={{ marginBottom: 10 }}>Vistas de la app:</Text>
 			<Button
+				title="Mostrar Iniciar sesión"
+				onPress={() => navigation.navigate("IniciarSesion")}
+				containerStyle={{ marginVertical: 10 }}
+				buttonStyle={{ borderRadius: 10 }}
+			/>
+			<Button
 				title="Mostrar Filtro"
 				onPress={() => navigation.navigate("Filtro")}
 				containerStyle={{ marginVertical: 10 }}
