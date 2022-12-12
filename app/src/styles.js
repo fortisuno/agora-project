@@ -12,10 +12,10 @@ const styles = StyleSheet.create({
 		backgroundColor: "white",
 		paddingHorizontal: 20
 	},
-	defaultCotainer: {
+	defaultContainer: {
 		flex: 1,
-		alignItems: "start",
-		justifyContent: "start",
+		alignItems: "flex-start",
+		justifyContent: "flex-start",
 		backgroundColor: "white",
 		paddingHorizontal: 20
 	}

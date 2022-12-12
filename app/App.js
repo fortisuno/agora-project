@@ -21,7 +21,7 @@ function App() {
 	return (
 		<ThemeProvider theme={theme}>
 			<NavigationContainer>
-				<Stack.Navigator initialRouteName="IniciarSesion" screenOptions={{ headerShadowVisible: false }}>
+				<Stack.Navigator initialRouteName="Inicio" screenOptions={{ headerShadowVisible: false }}>
 					<Stack.Screen name="IniciarSesion" component={IniciarSesion} options={{ headerShown: false }} />
 					<Stack.Screen name="Inicio" component={Inicio} />
 					<Stack.Screen name="Filtro" component={Filtro} />
