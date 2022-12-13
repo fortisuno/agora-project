@@ -25,7 +25,7 @@ router.post("/propuestas", async (req,res) => {
         return res.status(500).send(error);
     }
 });
-
+ 
 router.get("/propuestas/:id", async (req, res) => {
     try {
         const doc = db.collection("propuestas").doc(req.params.id)

@@ -95,7 +95,7 @@ router.delete("/usuarios/:id", async (req, res) => {
 
             batch.commit()
         } catch (error) {
-            
+             
         }
 
         const document = db.collection("usuarios").doc(req.params.id)
