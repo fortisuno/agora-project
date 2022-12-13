@@ -20,7 +20,7 @@ const UsuarioDetalle = () => {
 				<Input placeholder="correo@gmail.com" label="Correo" />
 				<Input placeholder="+52 5511223344" label="Teléfono" />
 				<Button title="Actualizar cuenta" containerStyle={{ width: "100%" }} />
-				<Button title="Cambiar contraseña" type="clear" />
+				<Button title="Cambiar contraseña" containerStyle={{ width: "100%" }} type="clear" />
 			</View>
 	</ScrollView>
 	);

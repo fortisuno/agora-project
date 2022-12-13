@@ -8,13 +8,13 @@ const Filtro = () => {
 	return (
 		<ScrollView contentContainerStyle={styles.scrollContainer}>
 			<Text style={styles.sectionTitle}>Filtros</Text>
-				<View style={styles.centeredContainer}>
+				<View style={styles.defaultContainer}>
 					<Input placeholder="Min" label="Presupuesto" />
 					<Input placeholder="Max" label="Presupuesto" />
 					<Input placeholder="Todas" label="Ubicación" />
 					<Input placeholder="Todas" label="Categorías" />
 					<Button title="Guardar cambios" containerStyle={{ width: "100%" }} />
-					<Button title="Cancelar" type="clear" />
+					<Button title="Cancelar" containerStyle={{ width: "100%" }} type="clear" />
 				</View>
 		</ScrollView>
 	);

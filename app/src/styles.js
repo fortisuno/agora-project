@@ -21,13 +21,23 @@ const styles = StyleSheet.create({
 		backgroundColor: "white",
 		paddingHorizontal: 20
 	},
-	sectionTitle: {
+	sectionTitle: {	
 		textAlign: 'left',
-		marginTop: 20,
+		marginTop: 10,
+		marginBottom: 20,
 		backgroundColor: 'white',
 		fontSize: 28,
 		fontWeight: 'bold',
 		paddingHorizontal: 30
+	},
+	singleTitle: {
+		textAlign: 'left',
+		marginTop: 1,
+		marginBottom: 1,
+		backgroundColor: 'white',
+		fontSize: 20,
+		fontWeight: 'bold',
+		paddingHorizontal: 20
 	}
 });
 
