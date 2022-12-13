@@ -1,9 +1,11 @@
+import { fonts } from "@rneui/base";
 import { StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
 	scrollContainer: {
 		flexGrow: 1,
-		justifyContent: "center"
+		justifyContent: "center",
+		backgroundColor: 'white'
 	},
 	centeredContainer: {
 		flex: 1,
@@ -18,6 +20,14 @@ const styles = StyleSheet.create({
 		justifyContent: "flex-start",
 		backgroundColor: "white",
 		paddingHorizontal: 20
+	},
+	sectionTitle: {
+		textAlign: 'left',
+		marginTop: 20,
+		backgroundColor: 'white',
+		fontSize: 28,
+		fontWeight: 'bold',
+		paddingHorizontal: 30
 	}
 });
 
