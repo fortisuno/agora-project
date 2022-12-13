@@ -9,10 +9,8 @@ admin.initializeApp({
     credential: admin.applicationDefault()
 });
 
-app.use(require('./js/prueba'))
-app.use(require('./js/reg'))
-app.use(require('./js/usuarios'))
-app.use(require('./js/propuestas'))
-
+app.use(require('./src/pedidos'))
+app.use(require('./src/usuarios'))
+app.use(require('./src/propuestas'))
 
 exports.app = functions.https.onRequest(app);
