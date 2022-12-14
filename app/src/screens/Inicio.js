@@ -19,8 +19,8 @@ const list = [
 
 const Inicio = ({ navigation }) => {
 	return (
-		<View style={{ backgroundColor: "white", flexGrow: 1, paddingVertical: 20 }}>
-			<ScrollView>
+		<View style={[styles.screenProps, { padding: 0 }]}>
+			<ScrollView contentContainerStyle={{ paddingVertical: 20 }}>
 				<CardPedido onPress={() => navigation.navigate("PedidoDetalle", { id: "1234567" })} />
 			</ScrollView>
 			<FAB

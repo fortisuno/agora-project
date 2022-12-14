@@ -16,6 +16,8 @@ import { ThemeProvider } from "@rneui/themed";
 import theme from "./src/theme";
 import RecuperarContra from "./src/screens/RecuperarContra";
 import HeaderInicio from "./src/components/Header/HeaderInicio";
+import PropuestaFormulario from "./src/screens/PropuestaFormulario";
+import "./src/utils/extensions";
 
 const Stack = createNativeStackNavigator();
 
@@ -46,13 +48,18 @@ function App() {
 					<Stack.Screen
 						name="PedidoFormulario"
 						component={PedidoFormulario}
-						options={({ route }) => ({ title: `${route.params.mode} pedido` })}
+						options={({ route }) => ({ title: `${route.params.mode.toCapitalize()} pedido` })}
+					/>
+					<Stack.Screen
+						name="PropuestaFormulario"
+						component={PropuestaFormulario}
+						options={({ route }) => ({ title: `${route.params.mode.toCapitalize()} propuesta` })}
 					/>
 					<Stack.Screen name="UsuarioDetalle" component={UsuarioDetalle} options={{ title: "Perfil" }} />
 					<Stack.Screen
 						name="UsuarioFormulario"
 						component={UsuarioFormulario}
-						options={{ title: "Crear usuario" }}
+						options={({ route }) => ({ title: `${route.params.mode.toCapitalize()} usario` })}
 					/>
 				</Stack.Navigator>
 			</NavigationContainer>

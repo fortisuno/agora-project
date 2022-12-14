@@ -8,7 +8,9 @@ const CardPedido = ({ onPress }) => {
 		<View style={{ paddingHorizontal: 20, paddingVertical: 10, overflow: "visible" }}>
 			<ListItem containerStyle={{ elevation: 5, borderRadius: 10 }} onPress={onPress}>
 				<ListItem.Content>
-					<ListItem.Title style={{ color: "black", fontWeight: "bold" }}>Nombre del pedido</ListItem.Title>
+					<ListItem.Title style={{ color: "black", fontWeight: "bold", marginBottom: 10 }}>
+						Nombre del pedido
+					</ListItem.Title>
 					<View style={{ flexDirection: "row" }}>
 						<ListItem.Subtitle style={{ color: "black", marginRight: 10 }}>Precio (Cantidad) </ListItem.Subtitle>
 						<Badge value="Frutas" textStyle={{ fontWeight: "500" }} badgeStyle={{ paddingHorizontal: 4 }} />

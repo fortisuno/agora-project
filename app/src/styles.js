@@ -1,23 +1,25 @@
 import { StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
-	scrollContainer: {
+	screenProps: {
 		flexGrow: 1,
-		justifyContent: "center"
+		backgroundColor: "white",
+		padding: 20
 	},
-	centeredContainer: {
+	centeredProps: {
 		flex: 1,
 		alignItems: "center",
-		justifyContent: "center",
-		backgroundColor: "white",
-		paddingHorizontal: 20
+		justifyContent: "center"
 	},
-	defaultContainer: {
+	topLeftProps: {
 		flex: 1,
 		alignItems: "flex-start",
-		justifyContent: "flex-start",
-		backgroundColor: "white",
-		paddingHorizontal: 20
+		justifyContent: "flex-start"
+	},
+	topCenterProps: {
+		flex: 1,
+		alignItems: "center",
+		justifyContent: "flex-start"
 	}
 });
 

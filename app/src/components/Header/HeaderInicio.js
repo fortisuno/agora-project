@@ -13,16 +13,8 @@ const HeaderInicio = () => {
 	};
 	return (
 		<>
-			<Icon
-				name="tune"
-				reverse
-				color="white"
-				reverseColor="black"
-				size={16}
-				iconStyle={{ fontSize: 24 }}
-				onPress={handleFilter}
-			/>
-			<Divider orientation="vertical" color="white" width={8} insetType="middle" />
+			<Icon name="tune" size={24} iconStyle={{ borderRadius: 32, padding: 4 }} onPress={handleFilter} />
+			<Divider orientation="vertical" color="white" width={16} insetType="middle" />
 			<Avatar
 				title="PG"
 				rounded

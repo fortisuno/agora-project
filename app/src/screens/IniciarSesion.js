@@ -16,7 +16,7 @@ const IniciarSesion = ({ navigation }) => {
 	};
 
 	const handleNuevoUsuario = () => {
-		navigation.navigate("UsuarioFormulario");
+		navigation.navigate("UsuarioFormulario", { mode: "crear" });
 	};
 
 	const handleAuthFacebook = () => {
@@ -28,17 +28,11 @@ const IniciarSesion = ({ navigation }) => {
 	};
 
 	return (
-		<ScrollView contentContainerStyle={styles.scrollContainer}>
-			<View style={styles.centeredContainer}>
+		<ScrollView contentContainerStyle={[styles.screenProps]}>
+			<View style={styles.centeredProps}>
 				<Image source={logo} style={{ height: 123.36, width: 150, marginVertical: 50 }} />
 				<Input placeholder="ejemplo@correo.com" label="Correo electrónico" />
-				<Input
-					label="Contraseña"
-					placeholder="Abc123"
-					secureTextEntry={true}
-					inputStyle={{ margin: 0 }}
-					inputContainerStyle={{ padding: 0 }}
-				/>
+				<Input label="Contraseña" placeholder="Abc123" secureTextEntry={true} />
 				<Button title="¿Olvidaste la contraseña?" type="clear" onPress={handleRecuperarContra} />
 				<Button title="Iniciar sesión" containerStyle={{ width: "100%" }} onPress={handleAuthcorreo} />
 				<Button title="Crear cuenta" type="clear" onPress={handleNuevoUsuario} />

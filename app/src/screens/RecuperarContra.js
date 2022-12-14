@@ -8,7 +8,7 @@ const RecuperarContra = ({ navigation }) => {
 		navigation.goBack();
 	};
 	return (
-		<View style={styles.centeredContainer}>
+		<View style={[styles.screenProps, { paddingTop: 50 }]}>
 			<Input placeholder="ejemplo@correo.com" label="Correo electrónico" />
 			<Button title="Recuperar contraseña" containerStyle={{ width: "100%" }} onPress={handleBack} />
 			<Button title="Cancelar" containerStyle={{ width: "100%" }} type="clear" onPress={handleBack} />

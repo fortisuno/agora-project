@@ -6,7 +6,7 @@ const colors = {
 
 export const app = {
 	borderRadius: 10,
-	baseSize: 16
+	baseSize: 10
 };
 
 const theme = createTheme({
