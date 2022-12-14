@@ -1,20 +1,31 @@
 import { View, Text, ScrollView } from "react-native";
-import React from "react";
+import React, { useContext } from "react";
 import styles from "../styles";
 import ReadOnly from "../components/ReadOnly";
 import CardPropuesta from "../components/Card/CardPropuesta";
 import { FAB, Icon, lightColors } from "@rneui/themed";
 
-const PedidoDetalle = ({ navigation }) => {
-	// UserContext {...user, tipo: "Cliente" | "Proveedor"}
+const PedidoDetalle = ({ navigation, route }) => {
+	// const { userProfile } = useContext(AuthContext);
 
-	const tipo = "Proveedor"; // Viene del context
+	// const { tipo } = userProfile;
+	const [pedido, setPedido] = React.useState(null);
+
+	const pepidoInfo = {
+		titulo: "Frutas para evento"
+	};
+
+	React.useEffect(() => {
+		// Hacer fetch del pedido usanto el pedidoId (Metodo GET de api/pedidos/:id)
+		// const pedidoId = route.params.id;
+		const pedidoId = "asdasds";
+	}, []);
 
 	return (
 		<View style={[styles.screenProps, { padding: 0 }]}>
 			<ScrollView contentContainerStyle={{ paddingVertical: 20 }}>
 				<View style={{ marginBottom: 30, paddingHorizontal: 20 }}>
-					<ReadOnly label="Titulo" />
+					<ReadOnly label="Titulo" value={pedido.titulo} />
 					<ReadOnly label="Cliente" />
 					<View style={{ flexDirection: "row" }}>
 						<ReadOnly label="Precio" width="50%" />
@@ -32,7 +43,6 @@ const PedidoDetalle = ({ navigation }) => {
 			</ScrollView>
 			<FAB
 				title="Crear propuesta"
-				color={lightColors.primary}
 				placement="right"
 				onPress={() => navigation.navigate("PropuestaFormulario", { mode: "crear" })}
 			/>

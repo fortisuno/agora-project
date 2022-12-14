@@ -19,7 +19,7 @@ const CardPropuesta = ({}) => {
 						name="edit"
 						size={24}
 						iconStyle={{ borderRadius: 32, padding: 4 }}
-						onPress={() => navigation.navigate("PropuestaFormulario", { mode: "editar" })}
+						onPress={() => navigation.navigate("PropuestaFormulario", { mode: "editar", id: "222222222" })}
 					/>
 				</View>
 			</ListItem>

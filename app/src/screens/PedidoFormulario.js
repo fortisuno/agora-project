@@ -5,6 +5,18 @@ import { Button, Divider, Input, lightColors } from "@rneui/themed";
 import styles from "../styles";
 
 const PedidoFormulario = ({ navigation, route }) => {
+	const [pedido, setPedido] = React.useState(null);
+
+	const pepidoInfo = {
+		titulo: "Frutas para evento"
+	};
+
+	React.useEffect(() => {
+		// Hacer fetch del pedido usanto el pedidoId (Metodo GET de api/pedidos/:id)
+		// const pedidoId = route.params.id;
+		const pedidoId = "asdasds";
+	}, []);
+
 	const handleSave = () => {
 		navigation.goBack();
 	};

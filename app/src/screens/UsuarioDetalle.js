@@ -1,36 +1,50 @@
 import { View, Text, ScrollView } from "react-native";
-import React from "react";
-import { Chip, lightColors } from "@rneui/base";
-import { Avatar, Button } from "@rneui/themed";
+import React, { useContext } from "react";
+import { Avatar, Button, Chip, lightColors, useTheme } from "@rneui/themed";
 import ReadOnly from "../components/ReadOnly";
 import styles from "../styles";
+import { AuthContext, useAuthContext } from "../components/AuthContext";
+import { Ubicaciones } from "../models/Ubicaciones";
+import { useDataContext } from "../components/DataContext";
 
 const UsuarioDetalle = ({ navigation }) => {
+	const { signOut } = useAuthContext();
+	const { data } = useDataContext();
+	const { theme } = useTheme();
 	const handleUpdate = () => {
 		navigation.navigate("UsuarioFormulario", { mode: "editar" });
 	};
+
 	return (
-		<ScrollView contentContainerStyle={[styles.screenProps, styles.topCenterProps, { paddingHorizontal: 30 }]}>
-			<Avatar
-				title="PG"
-				rounded
-				size={128}
-				containerStyle={{ backgroundColor: lightColors.grey5, marginBottom: 16 }}
-				titleStyle={{ color: lightColors.primary, fontWeight: "bold" }}
-			/>
-			<Chip title="Cliente" containerStyle={{ marginBottom: 32 }} />
-			<ReadOnly lbel="Nombre" label="Nombre" />
-			<ReadOnly lbel="Ubicación" label="Ubicación" />
-			<ReadOnly lbel="correo@gmail.com" label="Correo" />
-			<ReadOnly lbel="+52 5511223344" label="Teléfono" />
-			<Button title="Actualizar cuenta" containerStyle={{ width: "100%" }} onPress={handleUpdate} />
-			<Button title="Cambiar contraseña" containerStyle={{ width: "100%" }} type="clear" />
-			<Button
-				title="Eliminar cuenta"
-				titleStyle={{ color: lightColors.error }}
-				containerStyle={{ width: "100%" }}
-				type="clear"
-			/>
+		<ScrollView contentContainerStyle={[styles.screenProps, { paddingHorizontal: 30 }]}>
+			<View style={styles.topCenterProps}>
+				<Avatar title={data.avatar} rounded size={128} containerStyle={{ marginBottom: 16 }} />
+				<Chip title="Cliente" color={theme.colors.secondary} containerStyle={{ marginBottom: 32 }} />
+				<ReadOnly value={data.displayName} label="Nombre" />
+				<ReadOnly value={Ubicaciones[data.ubicacion]} label="Ubicación" />
+				<ReadOnly value={data.email} label="Correo" />
+				<ReadOnly value={data.phoneNumber} label="Teléfono" />
+				<Button title="Actualizar cuenta" containerStyle={{ width: "100%" }} onPress={handleUpdate} />
+				<Button
+					title="Cambiar contraseña"
+					titleStyle={{ color: theme.colors.secondary }}
+					containerStyle={{ width: "100%" }}
+					type="clear"
+				/>
+				<Button
+					title="Cerrar sesión"
+					titleStyle={{ color: theme.colors.secondary }}
+					containerStyle={{ width: "100%", marginBottom: 32 }}
+					type="clear"
+					onPress={() => signOut()}
+				/>
+				<Button
+					title="Eliminar cuenta"
+					titleStyle={{ color: lightColors.error }}
+					containerStyle={{ width: "100%" }}
+					type="clear"
+				/>
+			</View>
 		</ScrollView>
 	);
 };

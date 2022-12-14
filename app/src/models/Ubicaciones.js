@@ -1,4 +1,4 @@
-const Ubicaciones = {
+export const Ubicaciones = {
 	AS: "Aguascalientes",
 	BC: "Baja California",
 	BS: "Baja California Sur",

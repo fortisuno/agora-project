@@ -1,14 +1,17 @@
 import { ScrollView, Text, View } from "react-native";
-import React, { Component } from "react";
+import React, { Component, useContext } from "react";
 import { Button, Divider, Image, Input, SocialIcon } from "@rneui/themed";
 
 import logo from "../../assets/logo.png";
 import { app } from "../theme";
 import styles from "../styles";
+import { useAuthContext } from "../components/AuthContext";
 
 const IniciarSesion = ({ navigation }) => {
+	const { signIn } = useAuthContext();
 	const handleAuthcorreo = () => {
-		navigation.replace("Inicio");
+		// Do something
+		signIn();
 	};
 
 	const handleRecuperarContra = () => {
