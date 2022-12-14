@@ -25,6 +25,14 @@ const theme = createTheme({
 				paddingHorizontal: app.baseSize,
 				paddingVertical: app.baseSize / 2
 			}
+		},
+		Card: {
+			marginVertical: 10,
+			width: 345,
+			height: 100,
+			alignItems: "flex-start",
+			backgroundColor: "white",
+			paddingHorizontal: 20,
 		}
 	}
 });
