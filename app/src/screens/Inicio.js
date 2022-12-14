@@ -1,18 +1,34 @@
-import { View, Text } from "react-native";
+import { ScrollView, View } from "react-native";
 import React from "react";
-import { Button, Divider } from "@rneui/themed";
+import { Avatar, Button, darkColors, Divider, FAB, lightColors, ListItem, Text } from "@rneui/themed";
+import * as Base from "@rneui/base";
 import styles from "../styles";
+import { Icon } from "@rneui/base";
+import CardPedido from "../components/Card/CardPedido";
+
+const list = [
+	{
+		title: "Appointments",
+		icon: "av-timer"
+	},
+	{
+		title: "Trips",
+		icon: "flight-takeoff"
+	}
+];
 
 const Inicio = ({ navigation }) => {
 	return (
-		<View style={styles.centeredContainer}>
-			<Text style={{ marginBottom: 10 }}>Vistas de la app:</Text>
-			<Button title="Mostrar Iniciar sesión" onPress={() => navigation.navigate("IniciarSesion")} />
-			<Button title="Mostrar Filtro" onPress={() => navigation.navigate("Filtro")} />
-			<Button title="Mostrar Pedido Detalle" onPress={() => navigation.navigate("PedidoDetalle")} />
-			<Button title="Mostrar Usuario Detalle" onPress={() => navigation.navigate("UsuarioDetalle")} />
-			<Button title="Mostrar Pedido Formulario" onPress={() => navigation.navigate("PedidoFormulario")} />
-			<Button title="Mostrar Usuario Formulario" onPress={() => navigation.navigate("UsuarioFormulario")} />
+		<View style={{ backgroundColor: "white", flexGrow: 1, paddingVertical: 20 }}>
+			<ScrollView>
+				<CardPedido onPress={() => navigation.navigate("PedidoDetalle", { id: "1234567" })} />
+			</ScrollView>
+			<FAB
+				icon={<Icon name="add" color="white" />}
+				color={lightColors.primary}
+				placement="right"
+				onPress={() => navigation.navigate("PedidoFormulario", { mode: "crear" })}
+			/>
 		</View>
 	);
 };

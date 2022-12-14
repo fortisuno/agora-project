@@ -14,6 +14,8 @@ import Filtro from "./src/screens/Filtro";
 import IniciarSesion from "./src/screens/IniciarSesion";
 import { ThemeProvider } from "@rneui/themed";
 import theme from "./src/theme";
+import RecuperarContra from "./src/screens/RecuperarContra";
+import HeaderInicio from "./src/components/Header/HeaderInicio";
 
 const Stack = createNativeStackNavigator();
 
@@ -21,14 +23,37 @@ function App() {
 	return (
 		<ThemeProvider theme={theme}>
 			<NavigationContainer>
-				<Stack.Navigator initialRouteName="Inicio" screenOptions={{ headerShadowVisible: false }}>
+				<Stack.Navigator
+					initialRouteName="IniciarSesion"
+					screenOptions={{
+						headerShadowVisible: false,
+						headerTitleStyle: { fontSize: 24 }
+					}}
+				>
 					<Stack.Screen name="IniciarSesion" component={IniciarSesion} options={{ headerShown: false }} />
-					<Stack.Screen name="Inicio" component={Inicio} />
-					<Stack.Screen name="Filtro" component={Filtro} />
-					<Stack.Screen name="PedidoDetalle" component={PedidoDetalle} />
-					<Stack.Screen name="PedidoFormulario" component={PedidoFormulario} />
-					<Stack.Screen name="UsuarioDetalle" component={UsuarioDetalle} />
-					<Stack.Screen name="UsuarioFormulario" component={UsuarioFormulario} />
+					<Stack.Screen
+						name="RecuperarContra"
+						component={RecuperarContra}
+						options={{ title: "Recuperar contraseña" }}
+					/>
+					<Stack.Screen
+						name="Inicio"
+						component={Inicio}
+						options={{ title: "Pedidos", headerRight: HeaderInicio }}
+					/>
+					<Stack.Screen name="Filtro" component={Filtro} options={{ title: "Filtrar pedidos" }} />
+					<Stack.Screen name="PedidoDetalle" component={PedidoDetalle} options={{ title: "Detalles de pedido" }} />
+					<Stack.Screen
+						name="PedidoFormulario"
+						component={PedidoFormulario}
+						options={({ route }) => ({ title: `${route.params.mode} pedido` })}
+					/>
+					<Stack.Screen name="UsuarioDetalle" component={UsuarioDetalle} options={{ title: "Perfil" }} />
+					<Stack.Screen
+						name="UsuarioFormulario"
+						component={UsuarioFormulario}
+						options={{ title: "Crear usuario" }}
+					/>
 				</Stack.Navigator>
 			</NavigationContainer>
 		</ThemeProvider>

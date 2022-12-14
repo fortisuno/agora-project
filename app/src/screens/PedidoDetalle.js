@@ -9,7 +9,7 @@ const PedidoDetalle = () => {
 
 	return (
 		<View style={styles.defaultContainer}>
-			{tipo === "Cliente" ? <PedidoDetalleCliente /> : <PedidoDetalleProveedor />}
+			<Text>Pedido detalle</Text>
 		</View>
 	);
 };
