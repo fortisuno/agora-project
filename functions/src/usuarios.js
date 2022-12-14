@@ -90,14 +90,22 @@ router.delete("/usuarios/:id", async (req, res) => {
 		const usuarioId = req.params.id;
 
 		// 1.1. Obtener el documento del usuario
-		const tipo = "cliente"; // se debe de obtener el tipo del usuario;
+
+		let docs = [];
+		let query = null
+		let querySnapshot = null
+		query = db.collection("usuarios");
+		querySnapshot = await query.get();
+		docs = querySnapshot.docs;
+
+		const response = docs.map((tipo) => tipo.data().tipo);// se debe de obtener el tipo del usuario;
 
 		// 2. Obtener el arreglo de pedidos o propuestas del usuario
-		let docs = [];
-		let query = null;
-		let querySnapshot = null;
+		docs = [];
+		query = null;
+		querySnapshot = null;
 
-		if (tipo === "cliente") {
+		if (response === "cliente") {
 			query = db.collection("pedidos");
 			querySnapshot = await query.where("usuarioId", "==", usuarioId).get();
 			docs = querySnapshot.docs;
@@ -114,9 +122,15 @@ router.delete("/usuarios/:id", async (req, res) => {
 		const batch = db.batch();
 
 		// 5. Iterar el arreglo de ids de pedidos o propuestas para eliminarlos por id
-		pedidosIds.forEach((pedidoId) => {
-			batch.delete(db.collection("pedidos").doc(pedidoId));
-		});
+		if (response === "cliente"){
+			pedidosIds.forEach((pedidoId) => {
+				batch.delete(db.collection("pedidos").doc(pedidoId));
+			});
+		}else{
+			pedidosIds.forEach((pedidoId) => {
+				batch.delete(db.collection("propuestas").doc(pedidoId));
+			});
+		}
 
 		// 6. Hacer commit del batch
 		batch.commit();

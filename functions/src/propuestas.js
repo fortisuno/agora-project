@@ -9,16 +9,33 @@ const router = Router()
 
 router.post("/propuestas", async (req,res) => {
     try {
-        const data = fs.Timestamp.now().toMillis()/1000
-        await db.collection('propuestas')
-        .doc('/'+'P-'+data.toFixed(0)+'/')
-        .create({
-            usuarioId: req.body.usuarioId,
-            usuarioNombre: req.body.usuarioNombre,
-            monto: req.body.monto,
-            cantidad: req.body.cantidad,
-            unidad: req.body.unidad
+        const uid = req.body.usuarioId
+        
+        let docs = [];
+		let query = null
+		let querySnapshot = null
+		query = db.collection("usuarios");
+		querySnapshot = await query.get();
+		docs = querySnapshot.docs;
+
+		const response = docs.map((doc) => doc.id)
+
+        if (response == uid){
+            const data = fs.Timestamp.now().toMillis()/1000
+            await db.collection('propuestas')
+            .doc('/'+'P-'+data.toFixed(0)+'/')
+            .create({
+                usuarioId: req.body.usuarioId,
+                usuarioNombre: req.body.usuarioNombre,
+                monto: req.body.monto,
+                cantidad: req.body.cantidad,
+                unidad: req.body.unidad
         })
+        }else{
+            return res.status(500).json({message: "Propuesta fallida, id invalido."})
+        }
+
+        
         return res.status(200).json({message: "Propuesta creada con exito"});
     } catch (error) {
         console.log(error);
