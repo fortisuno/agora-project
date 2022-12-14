@@ -1,6 +1,8 @@
 import { View, Text } from "react-native";
 import React from "react";
 import styles from "../styles";
+import PedidoDetalleProveedor from "../components/Pedidos/PedidoDetalleProveedor";
+import PedidoDetalleCliente from "../components/Pedidos/PedidoDetalleCliente";
 
 const PedidoDetalle = () => {
 	// UserContext {...user, tipo: "Cliente" | "Proveedor"}
