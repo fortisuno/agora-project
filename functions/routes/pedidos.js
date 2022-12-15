@@ -23,7 +23,7 @@ const addOne = async ({ body }, res) => {
 
 const getAll = async ({ query }, res) => {
 	try {
-		const docRef = firestore.collection(COLLECTION).where("userId", "==", query.userId);
+		const docRef = firestore.collection(COLLECTION).where("usuario.id", "==", query.usuarioId);
 		const snapshot = await docRef.get();
 
 		const snapshotData = snapshot.docs.map((doc) => {
