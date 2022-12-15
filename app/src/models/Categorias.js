@@ -1,4 +1,4 @@
-const Categorias = {
+export const Categorias = {
 	AG: "Agricultura",
 	GA: "Ganadería",
 	PE: "Pesca",

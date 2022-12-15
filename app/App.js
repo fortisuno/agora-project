@@ -19,7 +19,6 @@ import "./src/utils/extensions";
 import Loading from "./src/screens/Loading";
 import { AuthContext } from "./src/components/AuthContext";
 import { DataContext } from "./src/components/DataContext";
-import { API_URL } from "@env";
 import { onAuthStateChanged, signInWithEmailAndPassword, signOut } from "@firebase/auth";
 import { auth } from "./src/firebase";
 import { addOne, getById } from "./src/api";

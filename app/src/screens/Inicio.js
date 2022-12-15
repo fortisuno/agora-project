@@ -22,6 +22,7 @@ const list = [
 
 const Inicio = ({ navigation }) => {
 	const { theme } = useTheme();
+	const { data } = useDataContext();
 	const [state, dispatch] = React.useReducer(
 		(prevState, action) => {
 			switch (action.type) {
@@ -54,8 +55,8 @@ const Inicio = ({ navigation }) => {
 		const fetchData = async () => {
 			dispatch({ type: "FETCH_DATA" });
 			try {
-				const payload = await getAll("pedidos");
-				dispatch({ type: "DATA_FOUNDED", payload });
+				const pedidos = await getAll("pedidos", `usuarioId=${data.uid}`);
+				dispatch({ type: "DATA_FOUNDED", payload: pedidos || [] });
 			} catch (error) {
 				dispatch({ type: "FETCH_ERROR" });
 			}
@@ -80,7 +81,7 @@ const Inicio = ({ navigation }) => {
 						<CardPedido
 							key={pedido.id}
 							data={pedido}
-							onPress={() => navigation.navigate("PedidoDetalle", pedido)}
+							onPress={() => navigation.navigate("PedidoDetalle", { data: pedido })}
 						/>
 					))}
 				</ScrollView>

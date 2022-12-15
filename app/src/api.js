@@ -12,8 +12,8 @@ export const addOne = async (collection, data) => {
 	return await res.json();
 };
 
-export const getAll = async (collection) => {
-	const res = await fetch(`${API_URL}/${collection}`, {
+export const getAll = async (collection, queryParams) => {
+	const res = await fetch(`${API_URL}/${collection}?${queryParams}`, {
 		method: "GET"
 	});
 	return await res.json();
