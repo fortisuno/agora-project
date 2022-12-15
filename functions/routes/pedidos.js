@@ -3,103 +3,18 @@ const { Router } = require("express");
 
 const router = Router();
 const COLLECTION = "pedidos";
-const INTERNAL_ERROR_MESSAGE = ", por favor intente nuevamente o comuníquese con el administrador del sistema";
 
-router.post("/pedidos", async (req, res) => {
+const addOne = async ({ body }, res) => {
 	try {
-		const data = fs.Timestamp.now().toMillis() / 1000;
-		await db
-			.collection("pedidos")
-			.doc("/" + data.toFixed(0) + "/")
-			.create({
-				titulo: req.body.titulo,
-				usuarioId: req.body.usuarioId,
-				usuarioNombre: req.body.usuarioNombre,
-				presupuesto: req.body.presupuesto,
-				cantidad: req.body.cantidad,
-				unidad: req.body.unidad,
-				categoria: req.body.categoria,
-				descripcion: req.body.descripcion,
-				ubicacion: req.body.ubicacion
-			});
+		const date = new Date();
+		const timestamp = date.getTime().toString();
+		const id = timestamp.substring(timestamp.length - 6);
 
-		const snapshot = await db.collection("usuarios").get();
-		snapshot.forEach((doc) => {
-			console.log(doc.id, "=>", doc.data());
-		});
-
-		return res.status(200).json({ message: "Pedido creado con exito" });
-	} catch (error) {
-		return res.status(500).send(error);
-	}
-});
-
-router.get("/pedidos/:id", async (req, res) => {
-	try {
-		const doc = db.collection("pedidos").doc(req.params.id);
-		const item = await doc.get();
-		const respose = item.data();
-		return res.status(200).json(respose);
-	} catch (error) {
-		return res.status(500).send(error);
-	}
-});
-
-router.get("/pedidos", async (req, res) => {
-	try {
-		const query = db.collection("pedidos");
-		const querySnapshot = await query.get();
-		const docs = querySnapshot.docs;
-
-		const response = docs.map((doc) => ({
-			id: doc.id,
-			name: doc.data().titulo,
-			categoria: doc.data().categoria,
-			ubicacion: doc.data().ubicacion
-		}));
-
-		return res.status(200).json(response);
-	} catch (error) {
-		return res.status(500).send(error);
-	}
-});
-
-router.delete("/pedidos/:id", async (req, res) => {
-	try {
-		const document = db.collection("pedidos").doc(req.params.id);
-		await document.delete();
-		return res.status(200).json();
-	} catch (error) {
-		return res.status(500).send(error);
-	}
-});
-
-router.patch("/pedidos/:id", async (req, res) => {
-	try {
-		const document = db.collection("pedidos").doc(req.params.id);
-		await document.update({
-			titulo: req.body.name,
-			presupuesto: req.body.presupuesto,
-			cantidad: req.body.cantidad,
-			unidad: req.body.unidad,
-			categoria: req.body.categoria,
-			descripcion: req.body.descripcion,
-			ubicacion: req.body.ubicacion
-		});
-		return res.status(200).json({ message: "Cambios realizados con exito" });
-	} catch (error) {
-		return res.status(500).send(error);
-	}
-});
-
-const addPedido = async ({ body }, res) => {
-	try {
 		const docRef = firestore.collection(COLLECTION).doc(id);
-		const snapshot = await docRef.get();
 
-		await docRef.set({ ...body, search: body.titulo.toLowerCase() });
+		const writeResult = await docRef.set(body);
 
-		return res.status(200).json({ message: `La categoría ${id} ha sido creado` });
+		return res.status(200).json({ message: `El pedido ${id} ha sido creado`, writeResult });
 	} catch (error) {
 		return res.status(500).json({
 			message: `Hubo un error al agregar el pedido`
@@ -107,17 +22,15 @@ const addPedido = async ({ body }, res) => {
 	}
 };
 
-const getAllPedidos = async (req, res) => {
+const getAll = async (req, res) => {
 	try {
 		let docRef = firestore.collection(COLLECTION);
 		const snapshot = await docRef.get();
 
 		const snapshotData = snapshot.docs.map((doc) => {
-			const { search, ...content } = doc.data();
-
 			return {
 				id: doc.id,
-				...content
+				...doc.data()
 			};
 		});
 
@@ -127,22 +40,82 @@ const getAllPedidos = async (req, res) => {
 	}
 };
 
-const getPedido = async ({ params }, res) => {
+const getById = async ({ params }, res) => {
 	try {
 		const docRef = firestore.collection(COLLECTION).doc(params.id);
 		const snapshot = await docRef.get();
 
 		if (!snapshot.exists) {
-			return res.status(404).json({ message: `El pedido ${params.id} no existe` });
+			return res.status(404).json({ message: `El pedido ${params.id} no existe.` });
 		}
 
 		const snapshotData = snapshot.data();
 		return res.status(200).json(snapshotData);
 	} catch (error) {
 		return res.status(500).json({
-			message: `Hubo un error al obtener el pedido ${params.id}`
+			message: `Hubo un error al obtener el pedido ${params.id}.`
 		});
 	}
 };
+
+const deleteById = async ({ params }, res) => {
+	try {
+		const docRef = firestore.collection(COLLECTION).doc(params.id);
+		const snapshot = await docRef.get();
+
+		if (!snapshot.exists) {
+			return res.status(404).json({ message: `El pedido ${params.id} no existe.` });
+		}
+
+		const query = firestore.collection("propuestas").where("pedidoId", "==", params.id);
+
+		const querySnapshot = await query.get();
+
+		const batch = firestore.batch();
+
+		querySnapshot.docs.forEach((doc) => {
+			batch.delete(doc.ref);
+		});
+
+		batch.delete(docRef);
+
+		const writeResult = await batch.commit();
+
+		return res.status(200).json({ message: `El pedido ${params.id} ha sido eliminado.`, writeResult });
+	} catch (error) {
+		return res.status(500).json({
+			message: `Hubo un error al eliminar el pedido ${params.id}.`
+		});
+	}
+};
+
+const updateById = async ({ params, body }, res) => {
+	try {
+		const docRef = firestore.collection(COLLECTION).doc(params.id);
+		const snapshot = await docRef.get();
+
+		if (!snapshot.exists) {
+			return res.status(404).json({ message: `El pedido ${params.id} no existe.` });
+		}
+
+		const writeResult = await docRef.update(body);
+
+		return res.status(200).json({ message: `El pedido ${params.id} ha sido actualizado.`, writeResult });
+	} catch (error) {
+		return res.status(500).json({
+			message: `Hubo un error al actualizar el pedido ${params.id}.`
+		});
+	}
+};
+
+router.post(`/${COLLECTION}/add`, addOne);
+
+router.get(`/${COLLECTION}/:id`, getById);
+
+router.get(`/${COLLECTION}`, getAll);
+
+router.delete(`/${COLLECTION}/:id`, deleteById);
+
+router.put(`/${COLLECTION}/:id`, updateById);
 
 module.exports = router;

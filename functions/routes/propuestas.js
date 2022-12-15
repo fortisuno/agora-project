@@ -1,99 +1,109 @@
-const functions = require("firebase-functions");
-const admin = require('firebase-admin/app')
-const { Router } = require('express');
-const fs = require('firebase-admin/firestore');
+const { firestore, auth } = require("../server");
+const { Router } = require("express");
 
-const db = fs.getFirestore()
+const router = Router();
+const COLLECTION = "propuestas";
 
-const router = Router()
+const addOne = async ({ body }, res) => {
+	try {
+		const date = new Date();
+		const timestamp = date.getTime().toString();
+		const id = timestamp.substring(timestamp.length - 6);
 
-router.post("/propuestas", async (req,res) => {
-    try {
-        const uid = req.body.usuarioId
-        
-        let docs = [];
-		let query = null
-		let querySnapshot = null
-		query = db.collection("usuarios");
-		querySnapshot = await query.get();
-		docs = querySnapshot.docs;
+		const docRef = firestore.collection(COLLECTION).doc(id);
 
-		const response = docs.map((doc) => doc.id)
+		const writeResult = await docRef.set(body);
 
-        if (response == uid){
-            const data = fs.Timestamp.now().toMillis()/1000
-            await db.collection('propuestas')
-            .doc('/'+'P-'+data.toFixed(0)+'/')
-            .create({
-                usuarioId: req.body.usuarioId,
-                usuarioNombre: req.body.usuarioNombre,
-                monto: req.body.monto,
-                cantidad: req.body.cantidad,
-                unidad: req.body.unidad
-        })
-        }else{
-            return res.status(500).json({message: "Propuesta fallida, id invalido."})
-        }
+		return res.status(200).json({ message: `La propuesta ${id} ha sido creada`, writeResult });
+	} catch (error) {
+		return res.status(500).json({
+			message: `Hubo un error al agregar la propuesta`
+		});
+	}
+};
 
-        
-        return res.status(200).json({message: "Propuesta creada con exito"});
-    } catch (error) {
-        console.log(error);
-        return res.status(500).send(error);
-    }
-});
- 
-router.get("/propuestas/:id", async (req, res) => {
-    try {
-        const doc = db.collection("propuestas").doc(req.params.id)
-        const item = await doc.get()
-        const response = item.data()
-        return res.status(200).json(response)
-    } catch (error) {
-        return res.status(500).send(error);
-    }
-});
+const getAll = async (req, res) => {
+	try {
+		let docRef = firestore.collection(COLLECTION);
+		const snapshot = await docRef.get();
 
-router.get("/propuestas", async (req, res) => {
-    try {
-        const query = db.collection("propuestas");
-        const querySnapshot = await query.get();
-        const docs = querySnapshot.docs;
+		const snapshotData = snapshot.docs.map((doc) => {
+			return {
+				id: doc.id,
+				...doc.data()
+			};
+		});
 
-        const response = docs.map(doc => ({
-            usuarioNombre: req.body.usuarioNombre,
-            monto: req.body.monto,
-            cantidad: req.body.cantidad,
-            unidad: req.body.unidad
-    }))
-    return res.status(200).json(response);
-    } catch (error) {
-        return res.status(500).json();
-    }
-});
+		return res.status(200).json(snapshotData);
+	} catch (error) {
+		return res.status(500).json({ message: "Hubo un error al obtener propuestas" });
+	}
+};
 
-router.delete("/propuestas/:id", async (req, res) => {
-    try {
-        const document = db.collection("usuarios").doc(req.params.id)
-        await document.delete()
-        return res.status(200).json();
-    } catch (error) {
-        return res.status(500).json();
-    }
-});
+const getById = async ({ params }, res) => {
+	try {
+		const docRef = firestore.collection(COLLECTION).doc(params.id);
+		const snapshot = await docRef.get();
 
-router.patch('/propuesta/:id', async (req, res) => {
-    try {
-        const document = db.collection('propuesta').doc(req.params.id)
-        await document.update({
-            monto: req.body.monto,
-            cantidad: req.body.cantidad,
-            unidad: req.body.unidad
-        })
-        return res.status(200).json({message: "Cambios realizados con exito"})
-    } catch (error) {
-        return res.status(500).send(error);
-    }
-})
+		if (!snapshot.exists) {
+			return res.status(404).json({ message: `La propuesta ${params.id} no existe.` });
+		}
 
-module.exports = router
+		const snapshotData = snapshot.data();
+		return res.status(200).json(snapshotData);
+	} catch (error) {
+		return res.status(500).json({
+			message: `Hubo un error al obtener la propuesta ${params.id}.`
+		});
+	}
+};
+
+const deleteById = async ({ params }, res) => {
+	try {
+		const docRef = firestore.collection(COLLECTION).doc(params.id);
+		const snapshot = await docRef.get();
+
+		if (!snapshot.exists) {
+			return res.status(404).json({ message: `La propuesta ${params.id} no existe.` });
+		}
+
+		const writeResult = await docRef.delete();
+
+		return res.status(200).json({ message: `La propuesta ${params.id} ha sido eliminada.`, writeResult });
+	} catch (error) {
+		return res.status(500).json({
+			message: `Hubo un error al eliminar la propuesta ${params.id}.`
+		});
+	}
+};
+
+const updateById = async ({ params, body }, res) => {
+	try {
+		const docRef = firestore.collection(COLLECTION).doc(params.id);
+		const snapshot = await docRef.get();
+
+		if (!snapshot.exists) {
+			return res.status(404).json({ message: `La propuesta ${params.id} no existe.` });
+		}
+
+		const writeResult = await docRef.update(body);
+
+		return res.status(200).json({ message: `La propuesta ${params.id} ha sido actualizada.`, writeResult });
+	} catch (error) {
+		return res.status(500).json({
+			message: `Hubo un error al actualizar la propuesta ${params.id}.`
+		});
+	}
+};
+
+router.post(`/${COLLECTION}/add`, addOne);
+
+router.get(`/${COLLECTION}/:id`, getById);
+
+router.get(`/${COLLECTION}`, getAll);
+
+router.delete(`/${COLLECTION}/:id`, deleteById);
+
+router.put(`/${COLLECTION}/:id`, updateById);
+
+module.exports = router;
