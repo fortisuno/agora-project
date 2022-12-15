@@ -21,9 +21,9 @@ const addOne = async ({ body }, res) => {
 	}
 };
 
-const getAll = async (req, res) => {
+const getAll = async ({ query }, res) => {
 	try {
-		let docRef = firestore.collection(COLLECTION);
+		let docRef = firestore.collection(COLLECTION).where("pedidoId", "==", query.pedidoId);
 		const snapshot = await docRef.get();
 
 		const snapshotData = snapshot.docs.map((doc) => {
