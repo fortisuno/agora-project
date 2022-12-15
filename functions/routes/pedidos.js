@@ -1,11 +1,9 @@
-const functions = require("firebase-functions");
-const admin = require("firebase-admin/app");
+const { firestore, auth } = require("../server");
 const { Router } = require("express");
-const fs = require("firebase-admin/firestore");
 
 const router = Router();
-
-const db = fs.getFirestore();
+const COLLECTION = "pedidos";
+const INTERNAL_ERROR_MESSAGE = ", por favor intente nuevamente o comuníquese con el administrador del sistema";
 
 router.post("/pedidos", async (req, res) => {
 	try {
@@ -93,5 +91,58 @@ router.patch("/pedidos/:id", async (req, res) => {
 		return res.status(500).send(error);
 	}
 });
+
+const addPedido = async ({ body }, res) => {
+	try {
+		const docRef = firestore.collection(COLLECTION).doc(id);
+		const snapshot = await docRef.get();
+
+		await docRef.set({ ...body, search: body.titulo.toLowerCase() });
+
+		return res.status(200).json({ message: `La categoría ${id} ha sido creado` });
+	} catch (error) {
+		return res.status(500).json({
+			message: `Hubo un error al agregar el pedido`
+		});
+	}
+};
+
+const getAllPedidos = async (req, res) => {
+	try {
+		let docRef = firestore.collection(COLLECTION);
+		const snapshot = await docRef.get();
+
+		const snapshotData = snapshot.docs.map((doc) => {
+			const { search, ...content } = doc.data();
+
+			return {
+				id: doc.id,
+				...content
+			};
+		});
+
+		return res.status(200).json(snapshotData);
+	} catch (error) {
+		return res.status(500).json({ message: "Hubo un error al obtener pedidos" });
+	}
+};
+
+const getPedido = async ({ params }, res) => {
+	try {
+		const docRef = firestore.collection(COLLECTION).doc(params.id);
+		const snapshot = await docRef.get();
+
+		if (!snapshot.exists) {
+			return res.status(404).json({ message: `El pedido ${params.id} no existe` });
+		}
+
+		const snapshotData = snapshot.data();
+		return res.status(200).json(snapshotData);
+	} catch (error) {
+		return res.status(500).json({
+			message: `Hubo un error al obtener el pedido ${params.id}`
+		});
+	}
+};
 
 module.exports = router;

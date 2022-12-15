@@ -1,16 +1,13 @@
 const functions = require("firebase-functions");
-const admin = require('firebase-admin/app')
-const express = require('express');
-const fs = require('firebase-admin/firestore')
+const express = require("express");
+const cors = require("cors");
 
-const app = express()
+const app = express();
 
-admin.initializeApp({
-    credential: admin.applicationDefault()
-});
+app.use(cors({ origin: true }));
 
-app.use(require('./src/pedidos'))
-app.use(require('./src/usuarios'))
-app.use(require('./src/propuestas'))
+app.use(require("./routes/pedidos"));
+app.use(require("./routes/usuarios"));
+app.use(require("./routes/propuestas"));
 
 exports.app = functions.https.onRequest(app);
