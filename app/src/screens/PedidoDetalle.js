@@ -25,7 +25,7 @@ const PedidoDetalle = ({ navigation, route }) => {
 		<View style={[styles.screenProps, { padding: 0 }]}>
 			<ScrollView contentContainerStyle={{ paddingVertical: 20 }}>
 				<View style={{ marginBottom: 30, paddingHorizontal: 20 }}>
-					<ReadOnly label="Titulo" value={pedido.titulo} />
+					<ReadOnly label="Titulo" value="Titulo" />
 					<ReadOnly label="Cliente" />
 					<View style={{ flexDirection: "row" }}>
 						<ReadOnly label="Precio" width="50%" />

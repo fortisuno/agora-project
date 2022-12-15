@@ -31,9 +31,7 @@ const Inicio = ({ navigation }) => {
 	return (
 		<View style={[styles.screenProps, { padding: 0 }]}>
 			<ScrollView contentContainerStyle={{ paddingVertical: 20 }}>
-				{pedidos.map((pedido, index) => (
-					<CardPedido key={pedido.id} onPress={() => navigation.navigate("PedidoDetalle", { id: pedido.id })} />
-				))}
+				<CardPedido onPress={() => navigation.navigate("PedidoDetalle", { id: "aaaaa" })} />
 			</ScrollView>
 			<FAB
 				icon={<Icon name="add" color="white" />}
