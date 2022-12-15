@@ -7,8 +7,7 @@ const COLLECTION = "pedidos";
 const addOne = async ({ body }, res) => {
 	try {
 		const date = new Date();
-		const timestamp = date.getTime().toString();
-		const id = timestamp.substring(timestamp.length - 6);
+		const id = date.getTime().toString();
 
 		const docRef = firestore.collection(COLLECTION).doc(id);
 
