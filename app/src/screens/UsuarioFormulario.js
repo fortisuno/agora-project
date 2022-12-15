@@ -4,13 +4,22 @@ import styles from "../styles";
 import { Input, Button, lightColors } from "@rneui/themed";
 import { useFormik } from "formik";
 import { useAuthContext } from "../components/AuthContext";
+import { updateById } from "../api";
+import { useDataContext } from "../components/DataContext";
 const UsuarioFormulario = ({ navigation, route }) => {
-	const { signUp } = useAuthContext();
+	const { signUp, updateUser } = useAuthContext();
+	const { data } = useDataContext();
 	const handleCrearUsuario = async (values) => {
 		try {
 			const { confirmPassword, ...user } = values;
-			await signUp(user);
-			// alert(JSON.stringify(user));
+			if (route.params.mode === "crear") {
+				await signUp(user);
+			} else {
+				const { message } = await updateById("usuarios", route.params.data.uid, user);
+				updateUser({ ...data, ...user });
+				alert(message);
+				navigation.goBack();
+			}
 		} catch (e) {
 			alert(JSON.stringify(e));
 		}
@@ -21,17 +30,7 @@ const UsuarioFormulario = ({ navigation, route }) => {
 	};
 
 	const formik = useFormik({
-		initialValues: {
-			nombre: "",
-			apellidoPaterno: "",
-			apellidoMaterno: "",
-			tipo: "",
-			ubicacion: "",
-			email: "",
-			phoneNumber: "",
-			password: "",
-			confirmPassword: ""
-		},
+		initialValues: route.params.data,
 		onSubmit: handleCrearUsuario
 	});
 
@@ -108,9 +107,13 @@ const UsuarioFormulario = ({ navigation, route }) => {
 					/>
 				</>
 			)}
-			<Button title="Crear usuario" containerStyle={{ width: "100%" }} onPress={formik.handleSubmit} />
 			<Button
-				title={route.params.mode === "editar" ? "Eliminar" : "Cancelar"}
+				title={route.params.mode === "editar" ? "Guardar cambios" : "Crear cuenta"}
+				containerStyle={{ width: "100%" }}
+				onPress={formik.handleSubmit}
+			/>
+			<Button
+				title="Cancelar"
 				titleStyle={{ color: lightColors.error }}
 				containerStyle={{ width: "100%" }}
 				type="clear"

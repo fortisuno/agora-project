@@ -1,5 +1,5 @@
 import { ScrollView, View, Text } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import { Button, Divider, Input, lightColors, useTheme } from "@rneui/themed";
 import RadioButtonRN from "radio-buttons-react-native";
 
@@ -8,25 +8,36 @@ import { Categorias } from "../models/Categorias";
 import { Unidades } from "../models/Unidades";
 import { useFormik } from "formik";
 import { useDataContext } from "../components/DataContext";
-import { addOne } from "../api";
+import { addOne, updateById } from "../api";
 
 const PedidoFormulario = ({ navigation, route }) => {
 	const { theme } = useTheme();
 	const { data } = useDataContext();
 
+	const { id, ...payload } = route.params.data;
+
 	const handleSave = async (values) => {
 		try {
-			const payload = {
-				...values,
-				usuario: { id: data.uid, displayName: data.displayName },
-				ubicacion: data.ubicacion
-			};
-			const { message } = await addOne("pedidos", payload);
-			alert(message);
-			navigation.reset({
-				index: 0,
-				routes: [{ name: "Inicio" }]
-			});
+			if (route.params.mode === "crear") {
+				const pedido = {
+					...values,
+					usuario: { id: data.uid, displayName: data.displayName },
+					ubicacion: data.ubicacion
+				};
+				const { message } = await addOne("pedidos", pedido);
+				alert(message);
+				navigation.reset({
+					index: 0,
+					routes: [{ name: "Inicio" }]
+				});
+			} else {
+				const { message } = await updateById("pedidos", id, values);
+				alert(message);
+				navigation.reset({
+					index: 0,
+					routes: [{ name: "Inicio" }]
+				});
+			}
 		} catch (e) {
 			alert(JSON.stringify(e));
 		}
@@ -37,18 +48,20 @@ const PedidoFormulario = ({ navigation, route }) => {
 	};
 
 	const formik = useFormik({
-		initialValues:
-			route.params.mode === "editar"
-				? route.params.pedido
-				: {
-						titulo: "",
-						presupuesto: "",
-						cantidad: "",
-						unidad: "",
-						categoria: ""
-				  },
+		initialValues: payload,
 		onSubmit: handleSave
 	});
+
+	const unidades = Object.entries(Unidades).map((opt) => ({ id: opt[0], label: opt[1] }));
+	const categorias = Object.entries(Categorias).map((opt) => ({ id: opt[0], label: opt[1] }));
+
+	const retrieveIndex = (arr, target) => {
+		const index = arr.findIndex((obj) => obj.id === target);
+
+		if (index < 1) return 1;
+
+		return index + 1;
+	};
 
 	return (
 		<ScrollView contentContainerStyle={[styles.screenProps]}>
@@ -67,6 +80,9 @@ const PedidoFormulario = ({ navigation, route }) => {
 						value={formik.values.presupuesto}
 						placeholder="Presupuesto"
 						label="Presupuesto"
+						keyboardType="numeric"
+						leftIcon={{ name: "attach-money", color: lightColors.grey3, size: 20 }}
+						leftIconContainerStyle={{ height: 20 }}
 						containerStyle={{ width: "50%" }}
 					/>
 					<Input
@@ -75,15 +91,16 @@ const PedidoFormulario = ({ navigation, route }) => {
 						value={formik.values.cantidad}
 						placeholder="Cantidad"
 						label="Cantidad"
+						keyboardType="numeric"
 						containerStyle={{ width: "50%" }}
 					/>
 				</View>
 				<View style={{ paddingHorizontal: 10, marginBottom: 25 }}>
 					<Text style={{ fontWeight: "600", fontSize: 16, color: theme.colors.grey3 }}>Unidad</Text>
 					<RadioButtonRN
-						data={Object.entries(Unidades).map((opt) => ({ id: opt[0], label: opt[1] }))}
+						data={unidades}
 						selectedBtn={({ id }) => formik.setFieldValue("unidad", id)}
-						initial={1}
+						initial={retrieveIndex(unidades, route.params.data.unidad)}
 						box={false}
 						textStyle={{ fontWeight: "500" }}
 						circleSize={16}
@@ -92,9 +109,9 @@ const PedidoFormulario = ({ navigation, route }) => {
 				<View style={{ paddingHorizontal: 10, marginBottom: 50 }}>
 					<Text style={{ fontWeight: "600", fontSize: 16, color: theme.colors.grey3 }}>Categoría</Text>
 					<RadioButtonRN
-						data={Object.entries(Categorias).map((opt) => ({ id: opt[0], label: opt[1] }))}
+						data={categorias}
 						selectedBtn={({ id }) => formik.setFieldValue("categoria", id)}
-						initial={1}
+						initial={retrieveIndex(categorias, route.params.data.categoria)}
 						box={false}
 						textStyle={{ fontWeight: "500" }}
 						circleSize={16}

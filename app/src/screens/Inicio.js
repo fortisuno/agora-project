@@ -86,11 +86,24 @@ const Inicio = ({ navigation }) => {
 					))}
 				</ScrollView>
 			)}
-			<FAB
-				icon={<Icon name="add" color="white" />}
-				placement="right"
-				onPress={() => navigation.navigate("PedidoFormulario", { mode: "crear" })}
-			/>
+			{data.tipo === "cliente" && (
+				<FAB
+					icon={<Icon name="add" color="white" />}
+					placement="right"
+					onPress={() =>
+						navigation.navigate("PedidoFormulario", {
+							mode: "crear",
+							data: {
+								titulo: "",
+								presupuesto: "",
+								cantidad: "",
+								unidad: "",
+								categoria: ""
+							}
+						})
+					}
+				/>
+			)}
 		</View>
 	);
 };

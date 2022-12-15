@@ -11,17 +11,34 @@ const UsuarioDetalle = ({ navigation }) => {
 	const { signOut } = useAuthContext();
 	const { data } = useDataContext();
 	const { theme } = useTheme();
+
 	const handleUpdate = () => {
-		navigation.navigate("UsuarioFormulario", { mode: "editar" });
+		const { nombre, apellidoPaterno, apellidoMaterno, email, phoneNumber, uid, ubicacion } = data;
+		navigation.navigate("UsuarioFormulario", {
+			mode: "editar",
+			data: {
+				uid,
+				nombre,
+				apellidoPaterno,
+				apellidoMaterno,
+				email,
+				phoneNumber: phoneNumber.substring(3),
+				ubicacion
+			}
+		});
 	};
 
 	return (
 		<ScrollView contentContainerStyle={[styles.screenProps, { paddingHorizontal: 30 }]}>
 			<View style={styles.topCenterProps}>
 				<Avatar title={data.avatar} rounded size={128} containerStyle={{ marginBottom: 16 }} />
-				<Chip title="Cliente" color={theme.colors.secondary} containerStyle={{ marginBottom: 32 }} />
+				<Chip
+					title={data.tipo.toCapitalize()}
+					color={theme.colors.secondary}
+					containerStyle={{ marginBottom: 32 }}
+				/>
 				<ReadOnly value={data.displayName} label="Nombre" />
-				<ReadOnly value={Ubicaciones[data.ubicacion]} label="Ubicación" />
+				<ReadOnly value={data.ubicacion} label="Ubicación" />
 				<ReadOnly value={data.email} label="Correo" />
 				<ReadOnly value={data.phoneNumber} label="Teléfono" />
 				<Button title="Actualizar cuenta" containerStyle={{ width: "100%" }} onPress={handleUpdate} />

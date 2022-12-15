@@ -22,6 +22,8 @@ import { DataContext } from "./src/components/DataContext";
 import { onAuthStateChanged, signInWithEmailAndPassword, signOut } from "@firebase/auth";
 import { auth } from "./src/firebase";
 import { addOne, getById } from "./src/api";
+import { LogBox } from "react-native";
+import HeaderPedidoDetalle from "./src/components/Header/HeaderPedidoDetalle";
 
 const Stack = createNativeStackNavigator();
 
@@ -107,10 +109,13 @@ function App() {
 				} catch (e) {
 					alert(JSON.stringify(e));
 				}
-			}
+			},
+			updateUser: (payload) => dispatch({ type: "RESTORE_SESSION", payload })
 		}),
 		[]
 	);
+
+	LogBox.ignoreAllLogs();
 
 	return (
 		<AuthContext.Provider value={authContext}>
@@ -138,7 +143,7 @@ function App() {
 									<Stack.Screen
 										name="PedidoDetalle"
 										component={PedidoDetalle}
-										options={{ title: "Detalles de pedido" }}
+										options={{ title: "Detalles de pedido", headerRight: HeaderPedidoDetalle }}
 									/>
 									<Stack.Screen
 										name="PedidoFormulario"

@@ -23,7 +23,20 @@ const IniciarSesion = ({ navigation }) => {
 	};
 
 	const handleNuevoUsuario = () => {
-		navigation.navigate("UsuarioFormulario", { mode: "crear" });
+		navigation.navigate("UsuarioFormulario", {
+			mode: "crear",
+			data: {
+				nombre: "",
+				apellidoPaterno: "",
+				apellidoMaterno: "",
+				tipo: "",
+				ubicacion: "",
+				email: "",
+				phoneNumber: "",
+				password: "",
+				confirmPassword: ""
+			}
+		});
 	};
 
 	const formik = useFormik({
