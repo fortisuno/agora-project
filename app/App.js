@@ -1,10 +1,8 @@
 // In App.js in a new project
 
 import * as React from "react";
-import { View, Text } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Button } from "@rneui/base";
 import Inicio from "./src/screens/Inicio";
 import PedidoDetalle from "./src/screens/PedidoDetalle";
 import PedidoFormulario from "./src/screens/PedidoFormulario";
@@ -19,19 +17,20 @@ import HeaderInicio from "./src/components/Header/HeaderInicio";
 import PropuestaFormulario from "./src/screens/PropuestaFormulario";
 import "./src/utils/extensions";
 import Loading from "./src/screens/Loading";
-import * as SecureStore from "expo-secure-store";
 import { AuthContext } from "./src/components/AuthContext";
 import { DataContext } from "./src/components/DataContext";
+import { API_URL } from "@env";
+import { onAuthStateChanged, signInWithEmailAndPassword, signOut } from "@firebase/auth";
+import { auth } from "./src/firebase";
+import { addOne, getById } from "./src/api";
 
 const Stack = createNativeStackNavigator();
-
-const usuarios = [];
 
 function App() {
 	const [state, dispatch] = React.useReducer(
 		(prevState, action) => {
 			switch (action.type) {
-				case "RESTORE_payload":
+				case "RESTORE_SESSION":
 					return {
 						...prevState,
 						data: action.payload,
@@ -59,63 +58,56 @@ function App() {
 	);
 
 	React.useEffect(() => {
-		const bootstrapAsync = async () => {
-			let data;
-
-			try {
-				data = await SecureStore.getItemAsync("data", { keychainAccessible: SecureStore.WHEN_UNLOCKED });
-			} catch (e) {
-				// Restoring payload failed
+		const unsuscribe = onAuthStateChanged(auth, async (user) => {
+			let payload = null;
+			if (user != null) {
+				const { uid, displayName, email, phoneNumber } = user;
+				const data = await getById("usuarios", uid);
+				payload = {
+					uid,
+					displayName,
+					email,
+					phoneNumber,
+					...data
+				};
 			}
-			dispatch({ type: "RESTORE_payload", payload: JSON.parse(data) });
-		};
+			dispatch({ type: "RESTORE_SESSION", payload });
+		});
 
-		bootstrapAsync();
+		return () => unsuscribe();
 	}, []);
 
 	const authContext = React.useMemo(
 		() => ({
-			signIn: async () => {
-				const data = {
-					id: "fa42a789-46a5-49d1-b19a-1c7d48dde6d3",
-					nombre: "Juan",
-					apellidoPaterno: "Perez",
-					apellidoMaterno: "Gonzalez",
-					displayName: "Juan Perez Gonzalez",
-					avatar: "JP",
-					phoneNumber: "+525511223344",
-					email: "ejemplo@email.com",
-					tipo: "cliente",
-					ubicacion: "DF"
-				};
+			signIn: async (email, password) => {
 				try {
-					await SecureStore.setItemAsync("data", JSON.stringify(data));
-				} catch (e) {}
-				dispatch({ type: "SIGN_IN", payload: data });
+					const payload = await signInWithEmailAndPassword(auth, email, password);
+					const { uid, displayName, phoneNumber } = payload.user;
+					const data = await getById("usuarios", uid);
+					dispatch({ type: "SIGN_IN", payload: { uid, displayName, email, phoneNumber, ...data } });
+				} catch (e) {
+					alert(JSON.stringify(e));
+				}
 			},
 			signOut: async () => {
 				try {
-					await SecureStore.deleteItemAsync("data");
-				} catch (e) {}
-				dispatch({ type: "SIGN_OUT" });
+					await signOut(auth);
+					dispatch({ type: "SIGN_OUT" });
+				} catch (e) {
+					alert(JSON.stringify(e));
+				}
 			},
-			signUp: async () => {
-				const data = {
-					id: "fa42a789-46a5-49d1-b19a-1c7d48dde6d3",
-					nombre: "Juan",
-					apellidoPaterno: "Perez",
-					apellidoMaterno: "Gonzalez",
-					displayName: "Juan Perez Gonzalez",
-					avatar: "JP",
-					phoneNumber: "+525511223344",
-					email: "ejemplo@email.com",
-					tipo: "cliente",
-					ubicacion: "DF"
-				};
+			signUp: async (user) => {
 				try {
-					await SecureStore.setItemAsync("data", JSON.stringify(data));
-				} catch (e) {}
-				dispatch({ type: "SIGN_IN", payload: data });
+					const { message } = await addOne("usuarios", user);
+					const userCredential = await signInWithEmailAndPassword(auth, user.email, user.password);
+					const { uid, phoneNumber, email, displayName } = userCredential.user;
+					const { password, ...content } = user;
+					dispatch({ type: "SIGN_IN", payload: { ...content, phoneNumber, email, displayName, uid } });
+					alert(message);
+				} catch (e) {
+					alert(JSON.stringify(e));
+				}
 			}
 		}),
 		[]
@@ -166,7 +158,7 @@ function App() {
 									/>
 								</>
 							)}
-							<Stack.Group navigationKey={state.isSignout ? "guest" : "user"}>
+							<Stack.Group navigationKey={state.data == null ? "guest" : "user"}>
 								<Stack.Screen
 									name="RecuperarContra"
 									component={RecuperarContra}
