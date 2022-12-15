@@ -23,7 +23,8 @@ const addOne = async ({ body }, res) => {
 
 const getAll = async ({ query }, res) => {
 	try {
-		const docRef = firestore.collection(COLLECTION).where("usuario.id", "==", query.usuarioId);
+		let docRef = firestore.collection(COLLECTION);
+		!!query.usuarioId && (docRef = docRef.where("usuario.id", "==", query.usuarioId));
 		const snapshot = await docRef.get();
 
 		const snapshotData = snapshot.docs.map((doc) => {
@@ -35,7 +36,7 @@ const getAll = async ({ query }, res) => {
 
 		return res.status(200).json(snapshotData);
 	} catch (error) {
-		return res.status(500).json({ message: "Hubo un error al obtener pedidos" });
+		return res.status(500).json({ message: "Hubo un error al obtener pedidos", error });
 	}
 };
 
