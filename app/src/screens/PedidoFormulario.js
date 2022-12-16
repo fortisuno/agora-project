@@ -8,7 +8,7 @@ import { Categorias } from "../models/Categorias";
 import { Unidades } from "../models/Unidades";
 import { useFormik } from "formik";
 import { useDataContext } from "../components/DataContext";
-import { addOne, updateById } from "../api";
+import { addOne, deleteById, updateById } from "../api";
 
 const PedidoFormulario = ({ navigation, route }) => {
 	const { theme } = useTheme();
@@ -43,8 +43,18 @@ const PedidoFormulario = ({ navigation, route }) => {
 		}
 	};
 
-	const handleCancel = () => {
-		navigation.goBack();
+	const handleCancel = async () => {
+		if (route.params.mode === "crear") {
+			navigation.goBack();
+		} else {
+			try {
+				const { message } = await deleteById("pedidos", id);
+				alert(message);
+				navigation.popToTop();
+			} catch (e) {
+				alert(JSON.stringify(e));
+			}
+		}
 	};
 
 	const formik = useFormik({

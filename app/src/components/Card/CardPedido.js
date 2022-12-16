@@ -2,6 +2,7 @@ import { View, Text } from "react-native";
 import React from "react";
 import { Avatar, Badge, Chip, ListItem } from "@rneui/themed";
 import TouchableScale from "react-native-touchable-scale";
+import { Categorias } from "../../models/Categorias";
 
 const CardPedido = ({ onPress, data }) => {
 	return (
@@ -15,7 +16,11 @@ const CardPedido = ({ onPress, data }) => {
 						<ListItem.Subtitle style={{ color: "black", marginRight: 10 }}>
 							${data.presupuesto} ({data.cantidad} {data.unidad}){" "}
 						</ListItem.Subtitle>
-						<Badge value="Frutas" textStyle={{ fontWeight: "500" }} badgeStyle={{ paddingHorizontal: 4 }} />
+						<Badge
+							value={Categorias[data.categoria]}
+							textStyle={{ fontWeight: "500" }}
+							badgeStyle={{ paddingHorizontal: 4 }}
+						/>
 					</View>
 				</ListItem.Content>
 				<ListItem.Chevron color="black" />

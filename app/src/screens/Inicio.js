@@ -8,21 +8,13 @@ import CardPedido from "../components/Card/CardPedido";
 import { useAuthContext } from "../components/AuthContext";
 import { useDataContext } from "../components/DataContext";
 import { getAll } from "../api";
-
-const list = [
-	{
-		title: "Appointments",
-		icon: "av-timer"
-	},
-	{
-		title: "Trips",
-		icon: "flight-takeoff"
-	}
-];
+import { useIsFocused } from "@react-navigation/core";
 
 const Inicio = ({ navigation }) => {
 	const { theme } = useTheme();
 	const { data } = useDataContext();
+	const isFocused = useIsFocused();
+
 	const [state, dispatch] = React.useReducer(
 		(prevState, action) => {
 			switch (action.type) {
@@ -52,18 +44,21 @@ const Inicio = ({ navigation }) => {
 	);
 
 	React.useEffect(() => {
-		const fetchData = async () => {
-			dispatch({ type: "FETCH_DATA" });
-			try {
-				const pedidos = await getAll("pedidos", `usuarioId=${data.uid}`);
-				dispatch({ type: "DATA_FOUNDED", payload: pedidos || [] });
-			} catch (error) {
-				dispatch({ type: "FETCH_ERROR" });
-			}
-		};
+		if (isFocused) {
+			const fetchData = async () => {
+				dispatch({ type: "FETCH_DATA" });
+				try {
+					const queryParams = data.tipo === "cliente" ? `usuarioId=${data.uid}` : "";
+					const pedidos = await getAll("pedidos", queryParams);
+					dispatch({ type: "DATA_FOUNDED", payload: pedidos || [] });
+				} catch (error) {
+					dispatch({ type: "FETCH_ERROR" });
+				}
+			};
 
-		fetchData();
-	}, []);
+			fetchData();
+		}
+	}, [isFocused]);
 
 	return (
 		<View

@@ -39,7 +39,8 @@ export const updateById = async (collection, id, data) => {
 };
 
 export const deleteById = async (collection, id) => {
-	await fetch(`${API_URL}/${collection}/${id}`, {
+	const res = await fetch(`${API_URL}/${collection}/${id}`, {
 		method: "DELETE"
 	});
+	return await res.json();
 };

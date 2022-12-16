@@ -7,11 +7,14 @@ import { FAB, Icon, lightColors, useTheme } from "@rneui/themed";
 import { Categorias } from "../models/Categorias";
 import { useDataContext } from "../components/DataContext";
 import { Ubicaciones } from "../models/Ubicaciones";
+import { getAll } from "../api";
+import { useIsFocused } from "@react-navigation/core";
 
 const PedidoDetalle = ({ navigation, route }) => {
 	const { data } = route.params;
 	const { theme } = useTheme();
 	const usuario = useDataContext();
+	const isFocused = useIsFocused();
 
 	const [state, dispatch] = React.useReducer(
 		(prevState, action) => {
@@ -42,18 +45,20 @@ const PedidoDetalle = ({ navigation, route }) => {
 	);
 
 	React.useEffect(() => {
-		const fetchData = async () => {
-			dispatch({ type: "FETCH_DATA" });
-			try {
-				const propuestas = await getAll("propuestas", `pedidoId=${data.id}`);
-				dispatch({ type: "DATA_FOUNDED", payload: propuestas || [] });
-			} catch (error) {
-				dispatch({ type: "FETCH_ERROR" });
-			}
-		};
+		if (isFocused) {
+			const fetchData = async () => {
+				dispatch({ type: "FETCH_DATA" });
+				try {
+					const propuestas = await getAll("propuestas", `pedidoId=${data.id}`);
+					dispatch({ type: "DATA_FOUNDED", payload: propuestas || [] });
+				} catch (error) {
+					dispatch({ type: "FETCH_ERROR" });
+				}
+			};
 
-		fetchData();
-	}, []);
+			fetchData();
+		}
+	}, [isFocused]);
 
 	return (
 		<View style={[styles.screenProps, { padding: 0 }]}>
@@ -65,7 +70,7 @@ const PedidoDetalle = ({ navigation, route }) => {
 						<ReadOnly label="Presupuesto" value={data.presupuesto} width="50%" />
 						<ReadOnly label="Cantidad" value={`${data.cantidad} ${data.unidad}`} width="50%" />
 						<ReadOnly label="Categoría" value={Categorias[data.categoria]} width="50%" />
-						<ReadOnly label="Ubicación" value={Ubicaciones[data.ubicacion]} width="50%" />
+						<ReadOnly label="Ubicación" value={data.ubicacion} width="50%" />
 					</View>
 				</View>
 				<View>
@@ -79,13 +84,19 @@ const PedidoDetalle = ({ navigation, route }) => {
 					)}
 				</View>
 			</ScrollView>
-			{usuario.data.tipo === "proveedor" && (
-				<FAB
-					title="Crear propuesta"
-					placement="right"
-					onPress={() => navigation.navigate("PropuestaFormulario", { mode: "crear" })}
-				/>
-			)}
+			{usuario.data.tipo === "proveedor" &&
+				!state.data.some((propuesta) => propuesta.usuario.id === usuario.data.uid) && (
+					<FAB
+						title="Crear propuesta"
+						placement="right"
+						onPress={() =>
+							navigation.navigate("PropuestaFormulario", {
+								mode: "crear",
+								data: { monto: "", cantidad: "", unidad: "", pedidoId: data.id }
+							})
+						}
+					/>
+				)}
 		</View>
 	);
 };

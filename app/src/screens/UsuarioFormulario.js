@@ -97,14 +97,6 @@ const UsuarioFormulario = ({ navigation, route }) => {
 						placeholder="Abc123"
 						secureTextEntry={true}
 					/>
-					<Input
-						onChangeText={formik.handleChange("confirmPassword")}
-						onBlur={formik.handleBlur("confirmPassword")}
-						value={formik.values.confirmPassword}
-						label="Confirmar contraseña"
-						placeholder="Abc123"
-						secureTextEntry={true}
-					/>
 				</>
 			)}
 			<Button

@@ -6,14 +6,15 @@ import styles from "../styles";
 import { AuthContext, useAuthContext } from "../components/AuthContext";
 import { Ubicaciones } from "../models/Ubicaciones";
 import { useDataContext } from "../components/DataContext";
+import { deleteById } from "../api";
 
 const UsuarioDetalle = ({ navigation }) => {
 	const { signOut } = useAuthContext();
 	const { data } = useDataContext();
 	const { theme } = useTheme();
+	const { nombre, apellidoPaterno, apellidoMaterno, email, phoneNumber, uid, ubicacion } = data;
 
 	const handleUpdate = () => {
-		const { nombre, apellidoPaterno, apellidoMaterno, email, phoneNumber, uid, ubicacion } = data;
 		navigation.navigate("UsuarioFormulario", {
 			mode: "editar",
 			data: {
@@ -26,6 +27,16 @@ const UsuarioDetalle = ({ navigation }) => {
 				ubicacion
 			}
 		});
+	};
+
+	const handleCancel = async () => {
+		try {
+			const { message } = await deleteById("usuarios", uid);
+			alert(message);
+			signOut();
+		} catch (e) {
+			alert(JSON.stringify(e));
+		}
 	};
 
 	return (
@@ -60,6 +71,7 @@ const UsuarioDetalle = ({ navigation }) => {
 					titleStyle={{ color: lightColors.error }}
 					containerStyle={{ width: "100%" }}
 					type="clear"
+					onPress={handleCancel}
 				/>
 			</View>
 		</ScrollView>
