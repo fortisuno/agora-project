@@ -1,13 +1,14 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
+import { APIKEY, AUTHDOMAIN, PROJECTID, STORAGEBUCKET, MESSASINGSENDERID, APPID } from "@env";
 
 const firebaseConfig = {
-	apiKey: "AIzaSyD4sRXDYvfK_D79nWOIQCd6ATpWC_vTzvM",
-	authDomain: "agora-592b0.firebaseapp.com",
-	projectId: "agora-592b0",
-	storageBucket: "agora-592b0.appspot.com",
-	messagingSenderId: "71096488029",
-	appId: "1:71096488029:web:e84143b6ae84045a5e7db4"
+	apiKey: APIKEY,
+	authDomain: AUTHDOMAIN,
+	projectId: PROJECTID,
+	storageBucket: STORAGEBUCKET,
+	messagingSenderId: MESSASINGSENDERID,
+	appId: PROJECTID
 };
 
 // Initialize Firebase
