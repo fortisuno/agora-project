@@ -28,6 +28,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "363aa6cb-e46a-4051-bb5a-16f9e7d40a26"
+      }
+    },
+    "owner": "fortisuno"
   }
 }
